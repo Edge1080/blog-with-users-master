@@ -256,3 +256,4 @@ if __name__ == "__main__":
 # TODO 1: Fix the comment glitch were refreshing after comment adds another comment
 # TODO 2: NEED to create a function for forgot password
 # TODO 3: Refactor the code
+# TODO 4: Contact page fixing
