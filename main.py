@@ -12,8 +12,8 @@ from flask_gravatar import Gravatar
 from functools import wraps
 import smtplib
 
-MY_EMAIL = os.environ.get("MY_EMAIL")
-PASSWORD = os.environ.get("MY_EMAIL_APP_PASSWORD")
+MY_EMAIL = os.environ['MY_EMAIL']
+PASSWORD = os.environ['MY_EMAIL_APP_PASSWORD']
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
@@ -36,11 +36,10 @@ def sendmail(email, name, phone_no, message):
         connection.login(user=MY_EMAIL, password=PASSWORD)
         connection.sendmail(
             from_addr=MY_EMAIL,
-            to_addrs=os.environ.get("TO_ADDRS"),
+            to_addrs=os.environ['TO_ADDRS'],
             msg=data
         )
         connection.quit()
-        print(data)
 
 
 def admin_only(f):
