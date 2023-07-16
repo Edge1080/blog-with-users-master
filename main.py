@@ -10,6 +10,10 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, cur
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 from flask_gravatar import Gravatar
 from functools import wraps
+import smtplib
+
+MY_EMAIL = os.environ.get("MY_EMAIL")
+PASSWORD = os.environ.get("MY_EMAIL_APP_PASSWORD")
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
@@ -23,6 +27,20 @@ db = SQLAlchemy(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+def sendmail(email, name, phone_no, message):
+    data = f"""Subject: Blog-Site Feedback\n\nEmail: {email} \nName: {name} \nPhone no: {phone_no} \nMessage: {message}\n"""
+    with smtplib.SMTP('smtp.gmail.com', port=587) as connection:
+        connection.starttls()
+        connection.login(user=MY_EMAIL, password=PASSWORD)
+        connection.sendmail(
+            from_addr=MY_EMAIL,
+            to_addrs=os.environ.get("TO_ADDRS"),
+            msg=data
+        )
+        connection.quit()
+        print(data)
 
 
 def admin_only(f):
@@ -168,9 +186,17 @@ def about():
     return render_template("about.html")
 
 
-@app.route("/contact")
+@app.route('/contact', methods=['get', 'post'])
 def contact():
-    return render_template("contact.html")
+    if request.method == 'POST':
+        data = request.form
+        email = data['email']
+        name = data['name']
+        phone_no = data['phone']
+        msg = data['message']
+        sendmail(email, name, phone_no, msg)
+        return render_template('contact.html', msg_sent=True)
+    return render_template('contact.html', msg_sent=False)
 
 
 @app.route("/new-post", methods=['GET', 'POST'])
@@ -226,3 +252,7 @@ def delete_post(post_id):
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
+
+# TODO 1: Fix the comment glitch were refreshing after comment adds another comment
+# TODO 2: NEED to create a function for forgot password
+# TODO 3: Refactor the code
