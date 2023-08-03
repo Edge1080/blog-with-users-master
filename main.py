@@ -252,7 +252,7 @@ def delete_post(post_id):
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
 
-# TODO 1: Fix the comment glitch were refreshing after comment adds another comment
+# TODO 1: Fix the comment glitch where refreshing after comment adds another comment
 # TODO 2: NEED to create a function for forgot password
 # TODO 3: Refactor the code
-# TODO 4: Contact page fixing
+# TODO 4: Add api for getting posts data
